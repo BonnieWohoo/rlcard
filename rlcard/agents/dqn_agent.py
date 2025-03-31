@@ -221,6 +221,7 @@ class DQNAgent(object):
         state_batch = np.array(state_batch)
 
         loss = self.q_estimator.update(state_batch, action_batch, target_batch)
+        sendToLogger()
         print('\rINFO - Step {}, rl-loss: {}'.format(self.total_t, loss), end='')
 
         # Update the target estimator
@@ -328,6 +329,9 @@ class DQNAgent(object):
             filename(str): the file name of checkpoint
         '''
         torch.save(self.checkpoint_attributes(), os.path.join(path, filename))
+
+    def sendToLogger(text):
+       return text 
 
 
 class Estimator(object):

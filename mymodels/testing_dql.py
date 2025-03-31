@@ -19,12 +19,55 @@ CONFIG = {
     "env": "uno",  # Change to "uno" or any other game
     "algorithm": "dqn",
     "seed": 42,
-    "num_episodes": 100,
+    "num_episodes": 1000,
     "num_eval_games": 20,
     "evaluate_every": 20,
     "log_dir": "experiments/uno_dqn_result/",
 }
 
+
+'''
+ Args:
+    replay_memory_size (int): Size of the replay memory
+    replay_memory_init_size (int): Number of random experiences to sample when initializing
+        the reply memory.
+    update_target_estimator_every (int): Copy parameters from the Q estimator to the
+        target estimator every N steps
+    discount_factor (float): Gamma discount factor
+    epsilon_start (float): Chance to sample a random action when taking an action.
+        Epsilon is decayed over time and this is the start value
+    epsilon_end (float): The final minimum value of epsilon after decaying is done
+    epsilon_decay_steps (int): Number of steps to decay epsilon over
+    batch_size (int): Size of batches to sample from the replay memory
+    evaluate_every (int): Evaluate every N steps
+    num_actions (int): The number of the actions
+    state_space (list): The space of the state vector
+    train_every (int): Train the network every X steps.
+    mlp_layers (list): The layer number and the dimension of each layer in MLP
+    learning_rate (float): The learning rate of the DQN agent.
+    device (torch.device): whether to use the cpu or gpu
+    save_path (str): The path to save the model checkpoints
+    save_every (int): Save the model every X training steps
+    '''
+
+ARGS = {
+    "replay_memory_size":20000,
+    "replay_memory_init_size":100,
+    "update_target_estimator_every":1000,
+    "discount_factor":0.99,
+    "epsilon_start":1.0,
+    "epsilon_end":0.1,
+    "epsilon_decay_steps":20000,
+    "batch_size":32,
+    "num_actions":2,
+    "state_shape":None,
+    "train_every":1,
+    "mlp_layers":None,
+    "learning_rate":0.00005,
+    "device":None,
+    "save_path":None,
+    "save_every":float('inf'),
+}
 
 def train():
 
@@ -58,6 +101,15 @@ def train():
 
     # Start training
     with Logger(CONFIG["log_dir"]) as logger:
+        logger.log("=========CONFIG=========")
+        for key, value in CONFIG.items():
+            text = f"{key}: {value}"
+            logger.log(text)
+        logger.log("==========ARGS==========")
+        for key, value in ARGS.items():
+            text = f"{key}: {value}"
+            logger.log(text)
+
         for episode in range(CONFIG["num_episodes"]):
 
             # Generate data from the environment
