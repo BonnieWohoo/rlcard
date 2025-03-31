@@ -19,7 +19,7 @@ CONFIG = {
     "env": "uno",  # Change to "uno" or any other game
     "algorithm": "dqn",
     "seed": 42,
-    "num_episodes": 1000,
+    "num_episodes": 100,
     "num_eval_games": 20,
     "evaluate_every": 20,
     "log_dir": "experiments/uno_dqn_result/",

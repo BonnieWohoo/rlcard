@@ -17,12 +17,14 @@ class Logger(object):
         self.txt_path = os.path.join(self.log_dir, 'log.txt')
         self.csv_path = os.path.join(self.log_dir, 'performance.csv')
         self.fig_path = os.path.join(self.log_dir, 'fig.png')
+        self.rl_path = os.path.join(self.log_dir, 'rl_loss.txt')
 
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
 
         self.txt_file = open(self.txt_path, 'w')
         self.csv_file = open(self.csv_path, 'w')
+        self.rl_file = open(self.rl_path, 'w')
         fieldnames = ['episode', 'reward']
         self.writer = csv.DictWriter(self.csv_file, fieldnames=fieldnames)
         self.writer.writeheader()
@@ -36,6 +38,15 @@ class Logger(object):
         '''
         self.txt_file.write(text+'\n')
         self.txt_file.flush()
+        print(text)
+
+    def logrl(self, text):
+        ''' Write the text to log file then print it.
+        Args:
+            text(string): text to log
+        '''
+        self.rl_file.write(text+'\n')
+        self.rl_file.flush()
         print(text)
 
     def log_performance(self, episode, reward):
