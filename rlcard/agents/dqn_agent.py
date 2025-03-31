@@ -32,6 +32,7 @@ import torch
 import torch.nn as nn
 from collections import namedtuple
 from copy import deepcopy
+import sys
 
 from rlcard.utils.utils import remove_illegal
 
@@ -222,6 +223,7 @@ class DQNAgent(object):
 
         loss = self.q_estimator.update(state_batch, action_batch, target_batch)
         print('\rINFO - Step {}, rl-loss: {}'.format(self.total_t, loss), end='')
+        print("Hello World")
 
         # Update the target estimator
         if self.train_t % self.update_target_estimator_every == 0:
