@@ -14,10 +14,12 @@ class Logger(object):
         self.log_dir = log_dir
 
     def __enter__(self):
+        if not os.path.exists(self.log_dir):
+            os.makedirs(self.log_dir)
+
         self.txt_path = os.path.join(self.log_dir, 'log.txt')
         self.csv_path = os.path.join(self.log_dir, 'performance.csv')
         self.fig_path = os.path.join(self.log_dir, 'fig.png')
-        self.rl_path = os.path.join(self.log_dir, 'rl_loss.txt')
 
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)

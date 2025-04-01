@@ -19,7 +19,7 @@ CONFIG = {
     "env": "uno",  # Change to "uno" or any other game
     "algorithm": "dqn",
     "seed": 42,
-    "num_episodes": 100,
+    "num_episodes": 1000,
     "num_eval_games": 20,
     "evaluate_every": 20,
     "log_dir": "experiments/uno_dqn_result/",
@@ -50,6 +50,7 @@ CONFIG = {
     save_every (int): Save the model every X training steps
     '''
 
+# Default
 ARGS = {
     "replay_memory_size":20000,
     "replay_memory_init_size":100,
@@ -69,7 +70,7 @@ ARGS = {
     "save_every":float('inf'),
 }
 
-def train():
+def train(ARGS, run_id):
 
     # Check whether gpu is available
     device = get_device()
@@ -90,7 +91,7 @@ def train():
     agent = DQNAgent(
         num_actions=env.num_actions,
         state_shape=env.state_shape[0],
-        mlp_layers=[64,64],
+        mlp_layers=ARGS["mlp_layers"],
         device=device,
     )
 
@@ -99,8 +100,11 @@ def train():
         agents.append(RandomAgent(num_actions=env.num_actions))
     env.set_agents(agents)
 
+    run_log_dir = os.path.join(CONFIG["log_dir"], f'run_{run_id}')
+    os.makedirs(run_log_dir, exist_ok=True)
+
     # Start training
-    with Logger(CONFIG["log_dir"]) as logger:
+    with Logger(run_log_dir) as logger:
         logger.log("=========CONFIG=========")
         for key, value in CONFIG.items():
             text = f"{key}: {value}"
@@ -141,8 +145,48 @@ def train():
     plot_curve(csv_path, fig_path, CONFIG["algorithm"])
 
     # Save model
-    save_path = os.path.join(CONFIG["log_dir"], 'model.pth')
+    save_path = os.path.join(run_log_dir, 'model.pth')
     torch.save(agent, save_path)
     print('Model saved in', save_path)
 
-train()
+# Function to run train with different parameter sets
+def run_train_with_params(param_sets):
+    for idx, params in enumerate(param_sets):
+        #print(f"Running with parameters: {params}")
+        # Pass the parameter set to train function with a unique run_id
+        train(params, run_id=idx)
+
+# Example of different parameter sets to test
+param_sets = [
+    {
+        "replay_memory_size": 30000,
+        "replay_memory_init_size": 1000,
+        "update_target_estimator_every": 2000,
+        "discount_factor": 0.99,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.1,
+        "epsilon_decay_steps": 25000,
+        "batch_size": 32,
+        "mlp_layers": [64, 64],
+        "learning_rate": 0.0001,
+        "device": None,
+        "save_every": 5000,
+    },
+    {
+        "replay_memory_size": 50000,
+        "replay_memory_init_size": 2000,
+        "update_target_estimator_every": 500,
+        "discount_factor": 0.95,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.05,
+        "epsilon_decay_steps": 30000,
+        "batch_size": 64,
+        "mlp_layers": [128, 128],
+        "learning_rate": 0.00001,
+        "device": None,
+        "save_every": 10000,
+    },
+    # Add more parameter sets as needed
+]
+
+run_train_with_params(param_sets)
