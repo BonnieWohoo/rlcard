@@ -20,7 +20,7 @@ CONFIG = {
     "algorithm": "dqn",
     "seed": 42,
     "num_episodes": 1000,
-    "num_eval_games": 20,
+    "num_eval_games": 50,
     "evaluate_every": 20,
     "log_dir": "experiments/uno_dqn_result/",
 }
@@ -96,7 +96,6 @@ def train(ARGS, run_id):
         epsilon_start=ARGS["epsilon_start"],
         epsilon_end=ARGS["epsilon_end"],
         batch_size=ARGS["batch_size"],
-        num_actions=ARGS["num_actions"],
         learning_rate=ARGS["learning_rate"],
         epsilon_decay_steps=ARGS["epsilon_decay_steps"],
         discount_factor=ARGS["discount_factor"],
