@@ -93,6 +93,13 @@ def train(ARGS, run_id):
         state_shape=env.state_shape[0],
         mlp_layers=ARGS["mlp_layers"],
         device=device,
+        epsilon_start=ARGS["epsilon_start"],
+        epsilon_end=ARGS["epsilon_end"],
+        batch_size=ARGS["batch_size"],
+        num_actions=ARGS["num_actions"],
+        learning_rate=ARGS["learning_rate"],
+        epsilon_decay_steps=ARGS["epsilon_decay_steps"],
+        discount_factor=ARGS["discount_factor"],
     )
 
     agents = [agent]
@@ -189,4 +196,4 @@ param_sets = [
     # Add more parameter sets as needed
 ]
 
-run_train_with_params(param_sets)
+#run_train_with_params(param_sets)
